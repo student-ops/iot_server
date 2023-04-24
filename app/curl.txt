@@ -1,0 +1,4 @@
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"surroundings":[{"number": 1, "timestamp": "2023-04-24T10:00:00Z", "tempreture": 10.5, "moisuture": 0.5, "airPressure": 1012.2}, {"number": 2, "timestamp": "2023-04-23T10:01:00Z", "tempreture": 15.3, "moisuture": 0.6, "airPressure": 1011.9}]}' \
+  http://localhost:8080/handle
