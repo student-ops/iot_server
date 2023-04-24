@@ -71,7 +71,7 @@ func insertPayload(payload []SurroundingsPalyload) {
 	for i, v := range surroundings {
 		fmt.Println(fmt.Printf("%d: number: %d, timestamp: %s, tempreture: %f, moisuture: %f, airPressure: %f", i, v.Number, v.Timestamp, v.Tempreture, v.Moisuture, v.AirPressure))
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
-			AddTag("user", "tar").
+			AddTag("user", "bar").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
