@@ -95,7 +95,7 @@ func init_testDB(t *testing.T) influxdb2.Client {
 	_, err = client.BucketsAPI().CreateBucketWithNameWithID(ctx, *dOrg.Id, bucket)
 
 	if err != nil {
-		t.Errorf("impossible to new create bucket")
+		t.Errorf("impossible to new create bucket!!")
 	}
 
 	return client
