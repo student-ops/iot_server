@@ -1,4 +1,4 @@
-up_build: script_permissions
+up_build: script_permissions export_variables
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -18,3 +18,8 @@ down:
 script_permissions:
 	@echo "Setting execution permissions for init-influxdb.sh..."
 	chmod +x db/init.sh
+
+export_variables:
+	@echo "exporting envirment variables by env_var.sh"
+	chmod +x env_var.sh
+	. ./env_var.sh
