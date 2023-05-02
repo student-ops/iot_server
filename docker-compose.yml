@@ -19,7 +19,11 @@ services:
         environment:
             DB_URL: http://influxdb:8086
             INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
-            INFLUXDB_ORG: iot
+            INFLUXDB_ORG: iot   
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
+    grafaha:
+        image: grafana/grafana-oss:main
+        ports:
+            - 3000:3000
