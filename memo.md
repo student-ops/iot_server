@@ -24,3 +24,7 @@ az acr create --resource-group myResourceGroup --name my-first-acr  --sku Basic
 
 az acr create --resource-group myResourceGroup --name maemuralaboacr  --sku Basic
 ```
+
+
+docker tag myapp:latest maemuralab/myrepo:myapp
+docker push maemuralab/myrepo:myapp

@@ -10,6 +10,8 @@ services:
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
         ports:
             - "8086:8086"
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d
     app:
         build: ./app
         ports:
@@ -25,3 +27,8 @@ services:
         image: grafana/grafana-oss:main
         ports:
             - 3000:3000
+
+    nginx:
+        image: nginx
+        ports:
+            - "80:80"
