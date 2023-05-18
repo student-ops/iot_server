@@ -1,0 +1,6 @@
+# Use Docker's official Docker-in-Docker image as a base
+FROM docker:dind
+
+# Install Docker Compose from Docker's GitHub repository
+RUN apk add --no-cache py-pip
+RUN pip install docker-compose
