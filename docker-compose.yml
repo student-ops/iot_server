@@ -28,12 +28,21 @@ services:
         image: grafana/grafana-oss:main
         ports:
             - 3000:3000
-    ngrok:
-        container_name: ngrok
+    ngrok_app:
+        container_name: ngrok_app
         image: wernight/ngrok:latest
         ports:
-            - ${NGROK_PORT:-4040}:4040
+            - 4040:4040
         environment:
-            - NGROK_AUTH=${NGROK_AUTH}
+            - NGROK_AUTH=${NGROK_APP_AUTH}
             - NGROK_PROTOCOL=http
             - NGROK_PORT=app:8080
+    ngrok_influxdb:
+        container_name: ngrok_influxdb
+        image: wernight/ngrok:latest
+        ports:
+            - 4041:4040
+        environment:
+            - NGROK_AUTH=${NGROK_DB_AUTH}
+            - NGROK_PROTOCOL=http
+            - NGROK_PORT=influxdb:8086
