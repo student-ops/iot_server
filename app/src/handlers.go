@@ -50,7 +50,7 @@ func InsertPayload(payload []SurroundingsPalyload) {
 	bucket = os.Getenv("INFLUXDB_BUCKET")
 	org = os.Getenv("INFLUXDB_ORG")
 	dbUrl = os.Getenv("DB_URL")
-	// fmt.Printf("connectingt to %s , bucket :%s ,org :%s ,token :%s\n", dbUrl, bucket, org, token)
+	fmt.Printf("connectingt to %s , bucket :%s ,org :%s ,token :%s\n", dbUrl, bucket, org, token)
 	client := influxdb2.NewClient(dbUrl, token)
 	writeAPI := client.WriteAPI(org, bucket)
 
@@ -65,14 +65,14 @@ func InsertPayload(payload []SurroundingsPalyload) {
 	})
 
 	for _, v := range payload {
-		fmt.Println(v.Rssi)
+		fmt.Println(v)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
 			AddTag("user", "bar").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
-			SetTime(time.Now())
+			SetTime(v.Timestamp)
 		writeAPI.WritePoint(p)
 		defer client.Close()
 	}
