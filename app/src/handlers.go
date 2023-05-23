@@ -20,6 +20,7 @@ type RequestPayload struct {
 type SurroundingsPalyload struct {
 	Number      int       `json:"number"`
 	Timestamp   time.Time `json:"timestamp"`
+	Rssi int `json:rssi`
 	Tempreture  float64   `json:"tempreture"`
 	Moisuture   float64   `josn:"moisuture"`
 	AirPressure float64   `json:"airPressure"`
@@ -49,7 +50,7 @@ func insertPayload(payload []SurroundingsPalyload) {
 	bucket = os.Getenv("INFLUXDB_BUCKET")
 	org = os.Getenv("INFLUXDB_ORG")
 	dbUrl = os.Getenv("DB_URL")
-	fmt.Printf("connectingt to %s , bucket :%s ,org :%s ,token :%s\n", dbUrl, bucket, org, token)
+	// fmt.Printf("connectingt to %s , bucket :%s ,org :%s ,token :%s\n", dbUrl, bucket, org, token)
 	client := influxdb2.NewClient(dbUrl, token)
 	writeAPI := client.WriteAPI(org, bucket)
 
@@ -63,21 +64,16 @@ func insertPayload(payload []SurroundingsPalyload) {
 		return payload[i].Number < payload[j].Number
 	})
 
-	surroundings := make([]SurroundingsPalyload, len(payload))
-	for i, v := range payload {
-		surroundings[i] = v
-	}
 
-	for i, v := range surroundings {
-		fmt.Println(fmt.Printf("%d: number: %d, timestamp: %s, tempreture: %f, moisuture: %f, airPressure: %f", i, v.Number, v.Timestamp, v.Tempreture, v.Moisuture, v.AirPressure))
+	for _, v := range payload {
+		fmt.Println(v.Rssi)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
 			AddTag("user", "bar").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
-			SetTime(time.Now())
-		fmt.Printf("time: %s\n", v.Timestamp)
-		fmt.Printf("timesamp: %s\n", v.Timestamp)
+			AddField("Rssi", v.Rssi).
+			SetTime(v.Timestamp)
 		writeAPI.WritePoint(p)
 		defer client.Close()
 	}
