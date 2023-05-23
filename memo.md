@@ -28,3 +28,24 @@ az acr create --resource-group myResourceGroup --name maemuralaboacr  --sku Basi
 
 docker tag myapp:latest maemuralab/myrepo:myapp
 docker push maemuralab/myrepo:myapp
+
+
+influxdb query
+
+```
+influx query --raw 'from(bucket:"vuoy_monitor") |> range(start:-1mo)'
+
+```
+```
+
+influx query --raw 'from(bucket: "vuoy_monitor")
+  |> range(start: -30d)
+  |> filter(fn: (r) => r["_measurement"] == "vuoy_surroundings")
+  |> filter(fn: (r) => r["_field"] == "AirPressure")
+'
+```
+
+
+```
+influx delete --org  iot --bucket vuoy_monitor --start '1970-01-01T00:00:00Z' --stop $(date +"%Y-%m-%dT%H:%M:%SZ")
+```
