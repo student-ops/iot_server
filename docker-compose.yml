@@ -24,10 +24,12 @@ services:
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
-    grafaha:
+    grafana:
         image: grafana/grafana-oss:main
         ports:
             - 3000:3000
+        depends_on:
+            - influxdb
     ngrok_app:
         container_name: ngrok_app
         image: wernight/ngrok:latest
@@ -38,11 +40,11 @@ services:
             - NGROK_PROTOCOL=http
             - NGROK_PORT=app:8080
     ngrok_influxdb:
-        container_name: ngrok_influxdb
+        container_name: ngrok_grafana
         image: wernight/ngrok:latest
         ports:
             - 4041:4040
         environment:
             - NGROK_AUTH=${NGROK_DB_AUTH}
             - NGROK_PROTOCOL=http
-            - NGROK_PORT=influxdb:8086
+            - NGROK_PORT=grafana:3000
