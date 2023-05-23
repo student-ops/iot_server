@@ -20,7 +20,7 @@ type RequestPayload struct {
 type SurroundingsPalyload struct {
 	Number      int       `json:"number"`
 	Timestamp   time.Time `json:"timestamp"`
-	Rssi int `json:rssi`
+	Rssi        int       `json:rssi`
 	Tempreture  float64   `json:"tempreture"`
 	Moisuture   float64   `josn:"moisuture"`
 	AirPressure float64   `json:"airPressure"`
@@ -34,14 +34,14 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		tools.ErrorJSON(w, err)
 		return
 	}
-	insertPayload(requestPayload.Surroundings)
+	InsertPayload(requestPayload.Surroundings)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(`{"message": "OK"}`))
 	return
 }
 
-func insertPayload(payload []SurroundingsPalyload) {
+func InsertPayload(payload []SurroundingsPalyload) {
 	var token string
 	var bucket string
 	var org string
@@ -64,7 +64,6 @@ func insertPayload(payload []SurroundingsPalyload) {
 		return payload[i].Number < payload[j].Number
 	})
 
-
 	for _, v := range payload {
 		fmt.Println(v.Rssi)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
@@ -73,7 +72,7 @@ func insertPayload(payload []SurroundingsPalyload) {
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
-			SetTime(v.Timestamp)
+			SetTime(time.Now())
 		writeAPI.WritePoint(p)
 		defer client.Close()
 	}
