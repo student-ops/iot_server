@@ -20,7 +20,7 @@ type RequestPayload struct {
 type SurroundingsPalyload struct {
 	Number      int       `json:"number"`
 	Timestamp   time.Time `json:"timestamp"`
-	Rssi        int       `json:rssi`
+	Rssi        int       `json:"rssi"`
 	Tempreture  float64   `json:"tempreture"`
 	Moisuture   float64   `josn:"moisuture"`
 	AirPressure float64   `json:"airPressure"`
@@ -55,6 +55,7 @@ func InsertPayload(payload []SurroundingsPalyload) {
 	writeAPI := client.WriteAPI(org, bucket)
 
 	// Add this block to listen for errors from the writeAPI
+
 	go func() {
 		for err := range writeAPI.Errors() {
 			fmt.Println("Error writing to InfluxDB:", err)

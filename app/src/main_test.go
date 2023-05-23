@@ -33,8 +33,13 @@ func Test_insertdb(t *testing.T) {
 		t.Errorf("Failed to parse timestamp: %s", err)
 		return
 	}
+	timestamp2, err := time.Parse(time.RFC3339, timestampStr)
+	if err != nil {
+		t.Errorf("Failed to parse timestamp: %s", err)
+		return
+	}
 	test_payload[0].Timestamp = timestamp
-	test_payload[1].Timestamp = timestamp
+	test_payload[1].Timestamp = timestamp2
 	fmt.Println(time.Now())
 
 	InsertPayload(payload)
