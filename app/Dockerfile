@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY ./src/ .
 
-RUN go mod download
+RUN go mod tidy
 RUN go build -o main ./
 
 FROM alpine:3.16

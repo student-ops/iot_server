@@ -1,6 +1,6 @@
 module github.com/xNok/Getting-Started-with-Go-and-InfluxDB
 
-go 1.19
+go 1.18
 
 require (
 	github.com/go-chi/chi/v5 v5.0.8

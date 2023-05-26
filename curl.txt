@@ -14,4 +14,4 @@ curl --header "Content-Type: application/json" -X POST --data '{"surroundings":[
 curl -X POST 'https://slack.com/api/chat.postMessage' \
 -H 'Content-Type: application/json; charset=utf-8' \
 -H 'Authorization: Bearer '$SLACK_BOT_OAUTH \
--d '{"channel":"#api-test", "text": $URL}'
+-d '{"channel":"#api-test", "text":"test"}'

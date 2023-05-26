@@ -48,3 +48,10 @@ services:
             - NGROK_AUTH=${NGROK_DB_AUTH}
             - NGROK_PROTOCOL=http
             - NGROK_PORT=grafana:3000
+    slack_bot:
+        build: ./url_manage
+        environment:
+            SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
+        depends_on:
+            - ngrok_app
+            - ngrok_influxdb
