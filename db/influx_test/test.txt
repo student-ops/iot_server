@@ -1,0 +1,19 @@
+# influx delete --org  iot --bucket vuoy_monitor --start '1970-01-01T00:00:00Z' --stop $(date +"%Y-%m-%dT%H:%M:%SZ")
+# ^[[A^[[2~^[[2~^[[2~^[[H^[[H^C
+# ^C
+# influx query --raw 'from(bucket: "vuoy_monitor")
+  |> range(start: -30d)
+  |> filter(fn: (r) => r["_measurement"] == "vuoy_surroundings")
+  |> filter(fn: (r) => r["_field"] == "AirPressure")
+'> > > > 
+
+# influx query --raw 'from(bucket: "vuoy_monitor")
+  |> range(start: -30d)
+  |> filter(fn: (r) => r["_measurement"] == "vuoy_surroundings")
+  |> filter(fn: (r) => r["_field"] == "AirPressure")
+'> > > > 
+#group,false,false,true,true,false,false,true,true,true
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string
+#default,_result,,,,,,,,
+,result,table,_start,_stop,_time,_value,_field,_measurement,user
+,,0,2023-04-23T15:48:33.472179383Z,2023-05-23T15:48:33.472179383Z,2023-05-23T10:00:00Z,1011.9,AirPressure,vuoy_surroundings,bar
