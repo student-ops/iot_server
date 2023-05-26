@@ -20,7 +20,7 @@ type RequestPayload struct {
 type SurroundingsPalyload struct {
 	Number      int       `json:"number"`
 	Timestamp   time.Time `json:"timestamp"`
-	Rssi        int       `json:rssi`
+	Rssi        int       `json:"rssi"`
 	Tempreture  float64   `json:"tempreture"`
 	Moisuture   float64   `josn:"moisuture"`
 	AirPressure float64   `json:"airPressure"`
@@ -67,12 +67,13 @@ func InsertPayload(payload []SurroundingsPalyload) {
 	for _, v := range payload {
 		fmt.Println(v)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
-			AddTag("user", "bar").
+			AddTag("user", "1").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
-			SetTime(v.Timestamp)
+			// must to refactore
+			SetTime(time.Now())
 		writeAPI.WritePoint(p)
 		defer client.Close()
 	}
