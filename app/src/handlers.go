@@ -68,12 +68,13 @@ func InsertPayload(payload []SurroundingsPalyload) {
 	for _, v := range payload {
 		fmt.Println(v)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
-			AddTag("user", "bar").
+			AddTag("user", "1").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
-			SetTime(v.Timestamp)
+			// must to refactore
+			SetTime(time.Now())
 		writeAPI.WritePoint(p)
 		defer client.Close()
 	}
