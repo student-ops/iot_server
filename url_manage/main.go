@@ -52,11 +52,12 @@ func main() {
 
 	slackBotOAuth := os.Getenv("SLACK_BOT_OAUTH")
 	app_service := "ngrok_app"
-	fmt.Printf("ngrok_app: \n%s\n", app_service)
 	monitor_service := "ngrok_monitor"
-	fmt.Printf("ngrok_monitor: \n%s\n", monitor_service)
 	ngrok_app := fetch_ngrok_url(app_service + ":4040")
+	fmt.Printf("ngrok_app: \n%s\n", ngrok_app)
+
 	ngrok_influx := fetch_ngrok_url(monitor_service + ":4040")
+	fmt.Printf("ngrok_monitor: \n%s\n", ngrok_influx)
 
 	json_data := map[string]interface{}{
 		"channel": "#url_manage",
