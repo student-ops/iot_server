@@ -52,10 +52,10 @@ type SlackResponse struct {
 func main() {
 
 	slackBotOAuth := os.Getenv("SLACK_BOT_OAUTH")
-	app_container := "ngrok_app"
-	monitor_container := "ngrok_influx"
-	ngrok_app := fetch_ngrok_url(app_container+":4040")
-	ngrok_influx := fetch_ngrok_url(monitor_container+":4040")
+	app_service := "ngrok_app"
+	monitor_service := "ngrok_monitor"
+	ngrok_app := fetch_ngrok_url(app_service+":4040")
+	ngrok_influx := fetch_ngrok_url(monitor_service+":4040")
 
 	json_data := map[string]interface{}{
 		"channel": "#url_manage",

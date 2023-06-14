@@ -39,19 +39,19 @@ services:
             - NGROK_AUTH=${NGROK_APP_AUTH}
             - NGROK_PROTOCOL=http
             - NGROK_PORT=app:8080
-    ngrok_influxdb:
-        container_name: ngrok_grafana
+    ngrok_monitor:
+        container_name: ngrok_monitor
         image: wernight/ngrok:latest
         ports:
             - 4041:4040
         environment:
             - NGROK_AUTH=${NGROK_DB_AUTH}
             - NGROK_PROTOCOL=http
-            - NGROK_PORT=influx:8086
+            - NGROK_PORT=influxdb:8086
     slack_bot:
         build: ./url_manage
         environment:
             SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
         depends_on:
             - ngrok_app
-            - ngrok_influxdb
+            - ngrok_monitor
