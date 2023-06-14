@@ -10,4 +10,4 @@ COPY ./main.go .
 RUN ls
 RUN go build -o main ./
 
-CMD sleep 10 && /app/main
+CMD sleep 15 && /app/main
