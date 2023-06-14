@@ -9,4 +9,4 @@ COPY ./main.go ./
 RUN ls
 RUN go build -o main ./
 
-CMD if [ -z "$IS_COMPOSE" ]; then echo "not saved" && /app/main; else sleep 15 /app/main $@; fi
+CMD if [ -z "$IS_COMPOSE" ]; then echo "not composed" && /app/main; else sleep 15 && /app/main $@; fi
