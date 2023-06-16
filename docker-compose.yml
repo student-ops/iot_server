@@ -51,6 +51,7 @@ services:
     slack_bot:
         build: ./url_manage
         environment:
+            IS_COMPOSE: true
             SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
         depends_on:
             - ngrok_app

@@ -36,7 +36,6 @@ func fetch_ngrok_url(host_port string) string {
 	}
 	var url string
 	if len(data.Tunnels) > 0 {
-		fmt.Println(data.Tunnels[0].PublicURL)
 		url = data.Tunnels[0].PublicURL
 	} else {
 		fmt.Println("No tunnels found")
@@ -54,8 +53,11 @@ func main() {
 	slackBotOAuth := os.Getenv("SLACK_BOT_OAUTH")
 	app_service := "ngrok_app"
 	monitor_service := "ngrok_monitor"
-	ngrok_app := fetch_ngrok_url(app_service+":4040")
-	ngrok_influx := fetch_ngrok_url(monitor_service+":4040")
+	ngrok_app := fetch_ngrok_url(app_service + ":4040")
+	fmt.Printf("ngrok_app: \n%s\n", ngrok_app)
+
+	ngrok_influx := fetch_ngrok_url(monitor_service + ":4040")
+	fmt.Printf("ngrok_monitor: \n%s\n", ngrok_influx)
 
 	json_data := map[string]interface{}{
 		"channel": "#url_manage",
