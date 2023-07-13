@@ -17,7 +17,7 @@ def send_post_request(url, data):
         return None
 
 def main():
-    url = 'http://10.17.42.2:8080/handle'
+    url = 'http://localhost:8080/handle'
     tmp = 20
     moi = 60
     air = 1024
