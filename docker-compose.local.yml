@@ -11,14 +11,8 @@ services:
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
         ports:
             - "8086:8086"
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
     app:
-        image: lakky1/iot_server_url_manage:latest
+        build: ./app
         ports:
             - "8080:8080"
         environment:
@@ -28,34 +22,35 @@ services:
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
     grafana:
         image: grafana/grafana-oss:main
         ports:
             - 3000:3000
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
-    slack-bot:
-        image: lakky1/iot_server_url_manage:latest
+    slack_bot:
+        build: ./url_manage
         environment:
             IS_COMPOSE: true
             SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
         depends_on:
             - ngrok_app
             - ngrok_monitor
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
+    # ngrok_app:
+    #     container_name: ngrok_app
+    #     image: wernight/ngrok:latest
+    #     ports:
+    #         - 4040:4040
+    #     environment:
+    #         - NGROK_AUTH=${NGROK_APP_AUTH}
+    #         - NGROK_PROTOCOL=http
+    #         - NGROK_PORT=app:8080
+    # ngrok_monitor:
+    #     container_name: ngrok_monitor
+    #     image: wernight/ngrok:latest
+    #     ports:
+    #         - 4041:4040
+    #     environment:
+    #         - NGROK_AUTH=${NGROK_DB_AUTH}
+    #         - NGROK_PROTOCOL=http
+    #         - NGROK_PORT=influxdb:8086
