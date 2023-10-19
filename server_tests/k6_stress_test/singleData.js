@@ -11,7 +11,7 @@ export default function () {
         "surroundings": [
             {
                 "number": 1,
-                "timestamp": console.log((new Date()).toISOString()),
+                "timestamp": (new Date()).toISOString(),
                 "tempreture": tmp,
                 "moisuture": moi,
                 "airPressure": air,
