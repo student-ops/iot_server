@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"sort"
@@ -49,26 +50,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 }
 func InsertPayload(payload []SurroundingsPalyload) error {
 	clientOptions := influxdb2.DefaultOptions()
-	clientOptions.WriteOptions().SetRetryInterval(1000)
 	client := influxdb2.NewClientWithOptions(dbUrl, token, clientOptions)
 	defer client.Close()
 
-	writeAPI := client.WriteAPI(org, bucket)
-
-	// Channel for error handling
-	errorsCh := make(chan error, 1) // bufferを追加して、エラーが即座に送信されるようにします。
-
-	// Listen for errors from the writeAPI
-	go func() {
-		for err := range writeAPI.Errors() {
-			select {
-			case errorsCh <- err:
-			default:
-				// エラーチャネルがフルの場合、エラーを無視します。
-				// 必要に応じてログに記録するなどの処理を追加できます。
-			}
-		}
-	}()
+	writeAPI := client.WriteAPIBlocking(org, bucket)
 
 	sort.Slice(payload, func(i, j int) bool {
 		return payload[i].Number < payload[j].Number
@@ -82,16 +67,13 @@ func InsertPayload(payload []SurroundingsPalyload) error {
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
 			SetTime(time.Now())
-		writeAPI.WritePoint(p)
+		// 同期的に書き込み
+		if err := writeAPI.WritePoint(context.Background(), p); err != nil {
+			return err // 書き込み中にエラーが発生した場合、エラーを直接返します
+		}
 	}
-	writeAPI.Flush()
 
-	select {
-	case err := <-errorsCh:
-		return err
-	default:
-		return nil
-	}
+	return nil
 }
 
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
