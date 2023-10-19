@@ -49,9 +49,6 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	return
 }
 func InsertPayload(payload []SurroundingsPalyload) error {
-	clientOptions := influxdb2.DefaultOptions()
-	client := influxdb2.NewClientWithOptions(dbUrl, token, clientOptions)
-	defer client.Close()
 
 	writeAPI := client.WriteAPIBlocking(org, bucket)
 
