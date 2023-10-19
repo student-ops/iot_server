@@ -48,4 +48,5 @@ influx delete --org  iot --bucket vuoy_monitor --start '1970-01-01T00:00:00Z' --
 ```
 echo 'from(bucket: "vuoy_monitor") |> range(start: -3m) |> filter(fn: (r) => r["_measurement"] == "vuoy_surroundings") |> filter(fn: (r) => r["_field"] == "AirPressure" or r["_field"] == "Moisuture" or r["_field"] == "Tempreture" or r["_field"] == "Rssi") |> count()' | docker exec -i bd55b89503f4 influx query --org $INFLUXDB_ORG --token $INFLUXDB_TOKEN
 
+echo 'from(bucket: "vuoy_monitor") |> range(start: -1d) |> filter(fn: (r) => r["_measurement"] == "vuoy_surroundings") |> filter(fn: (r) => r["_field"] == "AirPressure" or r["_field"] == "Moisuture" or r["_field"] == "Tempreture" or r["_field"] == "Rssi") |> count()' | docker exec -i bd55b89503f4 influx query --org $INFLUXDB_ORG --token $INFLUXDB_TOKEN
 ```
