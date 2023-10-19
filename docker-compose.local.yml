@@ -7,8 +7,9 @@ services:
             DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
             DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
             DOCKER_INFLUXDB_INIT_ORG: iot
-            DOCKER_INFLUXDB_INIT_BUCKET: users_business_events
+            DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET} 
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+
         ports:
             - "8086:8086"
     app:
@@ -28,14 +29,14 @@ services:
             - 3000:3000
         depends_on:
             - influxdb
-    slack_bot:
-        build: ./url_manage
-        environment:
-            IS_COMPOSE: true
-            SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
-        depends_on:
-            - ngrok_app
-            - ngrok_monitor
+    # slack_bot:
+    #     build: ./url_manage
+    #     environment:
+    #         IS_COMPOSE: true
+    #         SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
+    #     depends_on:
+    #         - ngrok_app
+    #         - ngrok_monitor
     # ngrok_app:
     #     container_name: ngrok_app
     #     image: wernight/ngrok:latest
