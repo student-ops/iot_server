@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"sort"
 	"time"
 
+	// influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/tsawler/toolbox"
 )
@@ -34,52 +34,66 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		tools.ErrorJSON(w, err)
 		return
 	}
-	InsertPayload(requestPayload.Surroundings)
+
+	err = InsertPayload(requestPayload.Surroundings)
+	if err != nil {
+		fmt.Println("Failed to insert payload:", err)
+		tools.ErrorJSON(w, err)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(`{"message": "OK"}`))
 	return
 }
+func InsertPayload(payload []SurroundingsPalyload) error {
+	clientOptions := influxdb2.DefaultOptions()
+	clientOptions.WriteOptions().SetRetryInterval(1000)
+	client := influxdb2.NewClientWithOptions(dbUrl, token, clientOptions)
+	defer client.Close()
 
-func InsertPayload(payload []SurroundingsPalyload) {
-	var token string
-	var bucket string
-	var org string
-	var dbUrl string
-	token = os.Getenv("INFLUXDB_TOKEN")
-	bucket = os.Getenv("INFLUXDB_BUCKET")
-	org = os.Getenv("INFLUXDB_ORG")
-	dbUrl = os.Getenv("DB_URL")
-	fmt.Printf("connectingt to %s , bucket :%s ,org :%s ,token :%s\n", dbUrl, bucket, org, token)
-	client := influxdb2.NewClient(dbUrl, token)
 	writeAPI := client.WriteAPI(org, bucket)
 
-	// Add this block to listen for errors from the writeAPI
+	// Channel for error handling
+	errorsCh := make(chan error, 1) // bufferを追加して、エラーが即座に送信されるようにします。
 
+	// Listen for errors from the writeAPI
 	go func() {
 		for err := range writeAPI.Errors() {
-			fmt.Println("Error writing to InfluxDB:", err)
+			select {
+			case errorsCh <- err:
+			default:
+				// エラーチャネルがフルの場合、エラーを無視します。
+				// 必要に応じてログに記録するなどの処理を追加できます。
+			}
 		}
 	}()
+
 	sort.Slice(payload, func(i, j int) bool {
 		return payload[i].Number < payload[j].Number
 	})
 
 	for _, v := range payload {
-		fmt.Println(v)
 		p := influxdb2.NewPointWithMeasurement("vuoy_surroundings").
 			AddTag("user", "1").
 			AddField("Tempreture", v.Tempreture).
 			AddField("Moisuture", v.Moisuture).
 			AddField("AirPressure", v.AirPressure).
 			AddField("Rssi", v.Rssi).
-			// must to refactore
 			SetTime(time.Now())
 		writeAPI.WritePoint(p)
-		defer client.Close()
 	}
-	return
+	writeAPI.Flush()
+
+	select {
+	case err := <-errorsCh:
+		return err
+	default:
+		return nil
+	}
 }
+
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := toolbox.JSONResponse{
 		Error:   false,

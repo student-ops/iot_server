@@ -4,9 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 const httpPort = "8080"
+
+var token = os.Getenv("INFLUXDB_TOKEN")
+var bucket = os.Getenv("INFLUXDB_BUCKET")
+var org = os.Getenv("INFLUXDB_ORG")
+var dbUrl = os.Getenv("DB_URL")
 
 type Config struct{}
 
