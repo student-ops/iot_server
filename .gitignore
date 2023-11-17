@@ -1,3 +1,4 @@
 *.env
 .env.local
 envfile
+**/app/src/*main*

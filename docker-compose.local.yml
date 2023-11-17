@@ -11,8 +11,6 @@ services:
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
         ports:
             - "8086:8086"
-        volumes:
-            - ./app/src/:/app/src/
     app:
         build: ./app
         ports:
@@ -24,12 +22,26 @@ services:
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
+        volumes:
+            - ./app/src/:/app/src/
     grafana:
         image: grafana/grafana-oss:main
         ports:
             - 3000:3000
         depends_on:
             - influxdb
+        volumes:
+            - ./grafana_volume:/var/lib/grafana
+    # k6:
+    #     image: grafana/k6:latest
+    #     networks:
+    #     - k6
+    #     ports:
+    #     - "6565:6565"
+    #     environment:
+    #     - K6_OUT=influxdb=http://influxdb:8086/k6
+    #     volumes:
+    #     - ./examples:/scripts
     # slack_bot:
     #     build: ./url_manage
     #     environment:
