@@ -21,7 +21,7 @@ type RequestPayload struct {
 type SurroundingsPalyload struct {
 	Number      int       `json:"number"`
 	Timestamp   time.Time `json:"timestamp"`
-	Rssi        int       `json:"rssi"`
+	Rssi        float64   `json:"rssi"`
 	Tempreture  float64   `json:"tempreture"`
 	Moisuture   float64   `josn:"moisuture"`
 	AirPressure float64   `json:"airPressure"`

@@ -21,17 +21,20 @@ def main():
     tmp = 20
     moi = 60
     air = 1024
+    rssi = -50
     while True:
         now = datetime.utcnow()
         formatted_date = now.strftime('%Y-%m-%dT%H:%M:%SZ')
         tmp = tmp + 3 - 6* random.random()
         moi = moi + 5 - 10* random.random()
         air = air + 5 - 10* random.random()
+        rssi = rssi + 5 - 10* random.random()
         data = {
             "surroundings": [
                 {
                     "number": 1,
                     "timestamp": formatted_date,
+                    "rssi": rssi,
                     "tempreture": tmp,
                     "moisuture": moi,
                     "airPressure": air,
