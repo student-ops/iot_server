@@ -1,7 +1,14 @@
 ## 開発中
+
 dev/slack ブランチ
 
 docker run -d -p 3000:3000 grafana/grafana-oss:main
+
+## Getting started
+
+import grafana volume on
+
+- ./grafana/grafana_volume:/var/lib/grafana
 
 ## INfluxdb query
 
@@ -12,4 +19,4 @@ from(bucket: "vuoy_monitor")
   |> filter(fn: (r) => r["_field"] == "Rssi")
   |> yield(name: "mean")
 
-  ```
+```

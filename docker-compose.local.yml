@@ -31,7 +31,7 @@ services:
         depends_on:
             - influxdb
         volumes:
-            - ./grafana_volume:/var/lib/grafana
+            - ./grafana/grafana_volume:/var/lib/grafana
     # k6:
     #     image: grafana/k6:latest
     #     networks:
