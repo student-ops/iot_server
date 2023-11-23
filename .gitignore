@@ -2,4 +2,4 @@
 .env.local
 envfile
 **/app/src/*main*
-grafana.db
+**/grafana_volume
