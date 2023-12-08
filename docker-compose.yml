@@ -7,20 +7,10 @@ services:
             DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
             DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
             DOCKER_INFLUXDB_INIT_ORG: iot
-            DOCKER_INFLUXDB_INIT_BUCKET: users_business_events
+            DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET} 
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
-        ports:
-            - "8086:8086"
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
     app:
-        image: lakky1/iot_server_url_manage:latest
-        ports:
-            - "8080:8080"
+        build: ./app
         environment:
             DB_URL: http://influxdb:8086
             INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
@@ -28,34 +18,30 @@ services:
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
+        volumes:
+            - ./app/src/:/app/src/
     grafana:
         image: grafana/grafana-oss:main
-        ports:
-            - 3000:3000
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
-
-    slack-bot:
-        image: lakky1/iot_server_url_manage:latest
+        volumes:
+            - ./grafana/grafana_volume:/var/lib/grafana
         environment:
-            IS_COMPOSE: true
-            SLACK_BOT_OAUTH: ${SLACK_BOT_OAUTH}
-        depends_on:
-            - ngrok_app
-            - ngrok_monitor
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
+            - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+            - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 8080:80
+
+    ngrok_monitor:
+        container_name: nginx_monitor
+        image: wernight/ngrok:latest
+        ports:
+            - 4040:4040
+        environment:
+            - NGROK_AUTH=${NGROK_AUTH}
+            - NGROK_PROTOCOL=http
+            - NGROK_PORT=nginx:80
