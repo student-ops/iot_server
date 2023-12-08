@@ -34,6 +34,10 @@ from(bucket: "vuoy_monitor")
 
 ```
 
+k6 commnad
+
 ```
+
+k6 run --vus 10 --duration 30s ./server_tests/sample_generator/sample_generator.js
 
 ```

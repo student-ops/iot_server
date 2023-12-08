@@ -11,11 +11,6 @@ services:
             DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
         ports:
             - "8086:8086"
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
 
     app:
         image: lakky1/iot_server_url_manage:latest
@@ -28,11 +23,6 @@ services:
             INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
 
     grafana:
         image: grafana/grafana-oss:main
@@ -40,11 +30,6 @@ services:
             - 3000:3000
         depends_on:
             - influxdb
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
 
     slack-bot:
         image: lakky1/iot_server_url_manage:latest
@@ -54,8 +39,5 @@ services:
         depends_on:
             - ngrok_app
             - ngrok_monitor
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: '0.3G'
+
+    
