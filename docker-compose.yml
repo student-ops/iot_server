@@ -1,47 +1,49 @@
 version: "3.7"
 services:
-    influxdb:
-        image: influxdb:2.0.7
-        environment:
-            DOCKER_INFLUXDB_INIT_MODE: setup
-            DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
-            DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
-            DOCKER_INFLUXDB_INIT_ORG: iot
-            DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET} 
-            DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
-    app:
-        build: ./app
-        environment:
-            DB_URL: http://influxdb:8086
-            INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
-            INFLUXDB_ORG: iot  
-            INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
-        depends_on:
-            - influxdb
-        volumes:
-            - ./app/src/:/app/src/
-    grafana:
-        image: grafana/grafana-oss:main
-        depends_on:
-            - influxdb
-        volumes:
-            - ./grafana/grafana_volume:/var/lib/grafana
-        environment:
-            - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-            - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-    nginx:
-        image: nginx:latest
-        volumes:
-            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-        ports:
-            - 8080:80
+  influxdb:
+    image: influxdb:2.0.7
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: iot
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+    ports:
+      - 8086:8086
+  app:
+    build: ./app
+    environment:
+      DB_URL: http://influxdb:8086
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
+      INFLUXDB_ORG: iot
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
+    depends_on:
+      - influxdb
+    volumes:
+      - ./app/src/:/app/src/
+  grafana:
+    image: grafana/grafana-oss:main
+    depends_on:
+      - influxdb
+    volumes:
+      - ./grafana/grafana_volume:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
 
-    ngrok_monitor:
-        container_name: nginx_monitor
-        image: wernight/ngrok:latest
-        ports:
-            - 4040:4040
-        environment:
-            - NGROK_AUTH=${NGROK_AUTH}
-            - NGROK_PROTOCOL=http
-            - NGROK_PORT=nginx:80
+  ngrok_monitor:
+    container_name: nginx_monitor
+    image: wernight/ngrok:latest
+    ports:
+      - 4040:4040
+    environment:
+      - NGROK_AUTH=${NGROK_AUTH}
+      - NGROK_PROTOCOL=http
+      - NGROK_PORT=nginx:80
