@@ -13,7 +13,7 @@ import grafana volume on
 let's compose up from local file
 
 ```
-docker compose -f docker-compose.local.yml up -d
+docker compose docker-compose.yml up
 
 cd server_tests/sample_generator/
 
@@ -21,6 +21,8 @@ python3 sample_generator.py
 ```
 
 then open http://localhost:3000
+
+## grafana
 
 ## INfluxdb query
 
